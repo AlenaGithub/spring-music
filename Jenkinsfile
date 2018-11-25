@@ -24,14 +24,16 @@ pipeline {
             steps {
                 sh './gradlew check'
                 //sh 'echo "Fail!"; exit 1'
+                input "Does the staging environment look ok?"
             }
         }
-        stage('Sanity check') {
+/*        stage('Sanity check') {
             steps {
                 input "Does the staging environment look ok?"
             }
         }
-    }
+    }*/
+    
     post {
         always {
             echo 'This will always run'
