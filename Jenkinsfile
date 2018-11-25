@@ -26,18 +26,30 @@ pipeline {
                 //sh 'echo "Fail!"; exit 1'
             }
         }
+        stage('Sanity check') {
+            steps {
+                input "Does the staging environment look ok?"
+            }
+        }
     }
     post {
         always {
             echo 'This will always run'
-            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-            junit 'build/reports/**/*.xml'
+//            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+//            junit 'build/reports/**/*.xml'
+            deleteDir() /* clean up our workspace */
         }
         success {
             echo 'This will run only if successful'
+            slackSend channel: '#ops-room',
+              color: 'good',
+              message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
         }
         failure {
             echo 'This will run only if failed'
+            mail to: 'lihua.li@cgi.com',
+                 subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+                 body: "Something is wrong with ${env.BUILD_URL}"
         }
         unstable {
             echo 'This will run only if the run was marked as unstable'
