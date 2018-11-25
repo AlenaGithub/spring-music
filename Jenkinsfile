@@ -34,6 +34,15 @@ pipeline {
 //        }
     }
 
+
+properties([
+  parameters([
+    string(name: 'submodule', defaultValue: 'spring-music'),
+    string(name: 'submodule_branch', defaultValue: 'develop')
+  ])
+])
+
+
     post {
         always {
             echo 'This will always run'
